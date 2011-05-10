@@ -1,0 +1,35 @@
+<html>
+<head>
+<script src="js/jquery.1.4.2.js" type="text/javascript"></script>	
+<script src="js/logger.js" type="text/javascript"></script>	
+<script>
+
+function openLink(link) {
+	chrome.tabs.create({"url":link});
+}
+
+function handleRequest(request, sender, callback) {
+	if (request.type == "download") {		
+		openLink(request.link);
+		if (sender.tab)
+			chrome.tabs.remove(sender.tab.id);
+	} else if (request.type == "download_folder") {
+		console.log(request.items);
+		for (var i=0; i < request.items.length; i++) {
+			var item = request.items[i];
+			console.log(item.link);
+			openLink(item.link);
+		}
+	}
+}
+
+chrome.extension.onRequest.addListener(handleRequest);
+
+chrome.browserAction.onClicked.addListener(function(tab) {
+
+});
+
+</script>
+</head>
+<body></body>
+</html>
